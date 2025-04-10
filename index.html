@@ -1,81 +1,67 @@
 <!DOCTYPE html>
-<html lang="en" id="html" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - Neuron Intelligence</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       background-color: #0d0d0d;
-      color: #e0f7fa;
+      color: #f3f4f6;
+      font-family: 'Inter', sans-serif;
     }
-    .neon-text {
-      color: #0ff;
-      text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff;
+    .sidebar a {
+      display: block;
+      padding: 0.75rem 0;
+      color: #d1d5db;
+      text-decoration: none;
     }
-    .neon-button {
-      background: #ff0066;
-      box-shadow: 0 0 5px #ff0066, 0 0 10px #ff0066;
+    .sidebar a:hover {
+      color: #60a5fa;
     }
-    .neon-button:hover {
-      background: #ff3399;
-      box-shadow: 0 0 10px #ff3399, 0 0 20px #ff3399;
-    }
-    .card-neon {
-      background-color: #1a1a1a;
-      box-shadow: 0 0 10px #00f2ff, 0 0 20px #00f2ff30;
-    }
-    .sidebar-neon a:hover {
-      color: #0ff;
-      text-shadow: 0 0 5px #0ff;
+    .card {
+      background-color: #1f2937;
+      border-radius: 0.5rem;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
   </style>
 </head>
 <body class="min-h-screen">
-  <nav class="bg-gray-950 shadow-md p-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold neon-text">Neuron Intelligence</h1>
-    <button onclick="logout()" class="neon-button text-white px-4 py-2 rounded">Logout</button>
+  <nav class="bg-gray-900 shadow-md p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold">Neuron Intelligence</h1>
+    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Logout</button>
   </nav>
 
   <div class="flex">
-    <aside class="w-64 bg-gray-950 p-6 min-h-screen hidden md:block sidebar-neon">
-      <h2 class="text-lg font-semibold mb-4 neon-text">Menu</h2>
+    <aside class="w-64 bg-gray-800 p-6 min-h-screen hidden md:block sidebar">
+      <h2 class="text-lg font-semibold mb-4">Menu</h2>
       <ul class="space-y-4">
-        <li><a href="#" class="text-gray-400 hover:text-cyan-300">Dashboard</a></li>
-        <li><a href="#" class="text-gray-400 hover:text-cyan-300">Analytics</a></li>
-        <li><a href="#" class="text-gray-400 hover:text-cyan-300">Settings</a></li>
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">Analytics</a></li>
+        <li><a href="#">Settings</a></li>
       </ul>
     </aside>
 
     <main class="flex-1 p-8">
       <section class="my-12">
-        <h2 class="text-3xl font-bold mb-6 neon-text">Welcome to Your Dashboard</h2>
+        <h2 class="text-3xl font-bold mb-6">Welcome to Your Dashboard</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div class="card-neon p-6 rounded-lg">
-            <h3 class="text-xl font-semibold mb-2 neon-text">Users</h3>
-            <p class="text-2xl">1,024</p>
+          <div class="card">
+            <h3 class="text-xl font-semibold mb-2">Users</h3>
+            <p class="text-2xl">-</p>
           </div>
-          <div class="card-neon p-6 rounded-lg">
-            <h3 class="text-xl font-semibold mb-2 neon-text">Active Sessions</h3>
-            <p class="text-2xl">256</p>
+          <div class="card">
+            <h3 class="text-xl font-semibold mb-2">Active Sessions</h3>
+            <p class="text-2xl">-</p>
           </div>
-          <div class="card-neon p-6 rounded-lg">
-            <h3 class="text-xl font-semibold mb-2 neon-text">Server Load</h3>
-            <p class="text-2xl">67%</p>
+          <div class="card">
+            <h3 class="text-xl font-semibold mb-2">Server Load</h3>
+            <p class="text-2xl">-</p>
           </div>
         </div>
-      </section>
-
-      <section class="my-12">
-        <h2 class="text-2xl font-bold mb-6 neon-text">Sessions Today</h2>
-        <canvas id="sessionsChart" class="bg-white rounded-lg"></canvas>
-      </section>
-
-      <section class="my-12">
-        <h2 class="text-2xl font-bold mb-6 neon-text">Server Load</h2>
-        <canvas id="serverChart" class="bg-white rounded-lg"></canvas>
       </section>
     </main>
   </div>
@@ -93,59 +79,7 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      checkAuth();
-      // Sessions Today Chart
-      const sessionsCtx = document.getElementById('sessionsChart').getContext('2d');
-      const sessionsChart = new Chart(sessionsCtx, {
-        type: 'bar',
-        data: {
-          labels: Array.from({length: 24}, (_, i) => `${i}:00`),
-          datasets: [{
-            label: 'Sessions',
-            data: Array.from({length: 24}, () => Math.floor(Math.random() * 100)),
-            backgroundColor: 'rgba(0, 255, 255, 0.7)',
-            borderColor: '#0ff',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
-
-      // Server Load Chart
-      const serverCtx = document.getElementById('serverChart').getContext('2d');
-      const serverChart = new Chart(serverCtx, {
-        type: 'line',
-        data: {
-          labels: Array.from({length: 24}, (_, i) => `${i}:00`),
-          datasets: [{
-            label: 'Server Load %',
-            data: Array.from({length: 24}, () => Math.floor(Math.random() * 100)),
-            backgroundColor: 'rgba(255, 0, 255, 0.3)',
-            borderColor: '#f0f',
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 100
-            }
-          }
-        }
-      });
-    });
+    document.addEventListener('DOMContentLoaded', checkAuth);
   </script>
 </body>
 </html>
